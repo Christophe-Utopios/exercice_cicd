@@ -239,6 +239,6 @@ def stats():
         'std_satisfaction': round(np.std(satisfactions), 2)
     }), 200
 
-
+# Commentaire
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
