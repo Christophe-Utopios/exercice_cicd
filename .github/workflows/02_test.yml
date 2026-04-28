@@ -102,7 +102,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
         run: |
-          huggingface-cli login --token $HF_TOKEN
+          hf login --token $HF_TOKEN
 
           git clone https://huggingface.co/spaces/$HF_SPACE_NAME hf-space
 
