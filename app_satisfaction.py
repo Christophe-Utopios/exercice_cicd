@@ -9,7 +9,7 @@ Cette API permet de :
 """
 
 from flask import Flask, request, jsonify
-import joblib
+import pickle
 import numpy as np
 from datetime import datetime
 
