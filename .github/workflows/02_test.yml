@@ -79,3 +79,42 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/app_satisfaction .
           docker push ${{ secrets.DOCKER_USERNAME }}/app_satisfaction
+
+  deploy-huggingface:
+    name: deploy  to huggingface
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v6
+
+      - name: Configuration python 3.11.9
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11.9' 
+
+      - name: Installation de hugging face
+        run: pip install huggingface_hub[cli]
+
+      - name: Push HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+        run: |
+          huggingface-cli login --token $HF_TOKEN
+
+          git clone https://huggingface.co/spaces/$HF_SPACE_NAME hf-space
+
+          cd hf-space
+
+          cp ../app_satisfaction.py ./
+          cp ../Dockerfile ./
+          cp ../requirements.txt ./
+
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          git add .
+          git commit -m "Deploy from Github actions"
+          git push https://user:$HF_TOKEN@huggingface.co/spaces/$HF_SPACE_NAME main
